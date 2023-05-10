@@ -1,34 +1,23 @@
-import speech_recognition as sr #Biblioteca para rec. de voz (transcreve fala em texto)
-from chatterbot.trainers import ListTrainer
 from chatterbot import ChatBot
-import comtypes.client as ct
+from chatterbot.trainers import ListTrainer
+from spacy.cli import download
 
-tts = ct.CreateObject("sapi.SPVoice")
-r = sr.Recognizer()
+#download("en_core_web_sm")
+class ENGSM:
+    ISO_639_1 = 'en_core_web_sm'
 
-bot = ChatBot('Bot')
-dialogo = ['Oi','Olá','olá','oi','tudo bem?','estou bem, e você?','estou bem','que bom'] #Lista de dialogos para treinar o bot
-bot.set_trainer(ListTrainer)
-bot.train(dialogo)
-"""
-def main():
-  try:
-    while True:
-      with sr.Microphone() as source:
-        r.adjust_for_ambient_noise(source) # Ajustando ruído ambiente
-        audio = r.listen(source) # Extrai áudio do microfone
-        speech = r.recognize_google(audio, language='pt-BR') #transcrevendo fala em texto com api da Google
-        print('Você: ', speech)
-        response = bot.get_response(speech)
-        print('Bot: ', response)
-        resposta = (u""+str(response))
-        tts.Speak(resposta)
-  except sr.UnknownValueError:
-        print('Erro de reconhecimento de fala')
+# Cria um novo chat, nomeado
+chatbot = ChatBot("BotPeo", tagger_language=ENGSM)
 
-if __name__ == "__main__":
-    main()
+trainer = ListTrainer(chatbot)
 
+trainer.train([
+    "Olá, como posso ajudar?",
+    "Claro, gostaria de reservar um voo para Guarulhos.",
+    "Seu voo foi reservado."
+])
 
+# Obtenha uma resposta para o texto de entrada. Gostaria de reservar um voo'
+resposta = chatbot.get_response('Gostaria de reservar um voo.')
 
-"""
+print(resposta)
